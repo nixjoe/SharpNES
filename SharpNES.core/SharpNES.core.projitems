@@ -9,5 +9,6 @@
     <Import_RootNamespace>SharpNES.core</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CPU.cs" />
   </ItemGroup>
 </Project>
