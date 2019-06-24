@@ -3,9 +3,11 @@ image: Visual Studio 2019
 before_build:
 - choco install opencover.portable
 - choco install codecov
+before_build:
+- cmd: >-
+    dotnet restor
 build_script:
 - cmd: >-
-    dotnet restore
     dotnet build SharpNES.standard -c Release
 test_script:
 - cmd: >-
