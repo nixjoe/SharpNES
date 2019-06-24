@@ -21,8 +21,11 @@ namespace SharpNES.SharedCode
 {
     public class CpuBus
     {
-        public CpuBus()
+        private CpuRam wram;
+
+        public CpuBus(CpuRam wram)
         {
+            this.wram = wram;
         }
 
         public byte Read(Address address)
@@ -30,7 +33,8 @@ namespace SharpNES.SharedCode
             switch (address & 0xE000)
             {
                 case 0x0000:
-                // WRAM
+                    // WRAM
+                    return this.wram.Read(address);
                 case 0x2000:
                 // PPU
                 case 0x4000:
@@ -45,6 +49,25 @@ namespace SharpNES.SharedCode
 
         public void Write(Address address, byte data)
         {
+            switch (address & 0xE000)
+            {
+                case 0x0000:
+                    // WRAM
+                    this.wram.Write(address, data);
+                    return;
+                case 0x2000:
+                    // PPU
+                    return;
+                case 0x4000:
+                    // APU, Controller I/O
+                    return;
+                case 0x8000:
+                case 0xC000:
+                    // Program ROM
+                    return;
+                default:
+                    throw new ArgumentException("Trying to access an address not included in the specification.");
+            }
         }
     }
 }
