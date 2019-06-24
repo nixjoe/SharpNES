@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Address = System.UInt16;
 
@@ -7,22 +8,32 @@ namespace SharpNES.SharedCode
     /// CPUのWRAM領域やPPUのVRAM、スプライトRAMなどのメモリ領域を表現する抽象クラス
     /// 各コンポーネントはこのクラスを継承し、サイズ指定やアドレスチェックなどを実装していく。
     /// </summary>
-    abstract class RAM
+    public abstract class RAM
     {
         private byte[] memory;
+        private int size;
 
         protected RAM(int size)
         {
+            this.size = size;
             memory = Enumerable.Repeat((byte) 0, size).ToArray();
         }
 
-        public byte Read(Address address)
+        public virtual byte Read(Address address)
         {
+            if (address >= size)
+            {
+                throw new ArgumentException("rying to access an address outside the specified range");
+            }
             return memory[address];
         }
 
-        public void Write(Address address, byte data)
+        public virtual void Write(Address address, byte data)
         {
+            if (address >= size)
+            {
+                throw new ArgumentException("rying to access an address outside the specified range");
+            }
             memory[address] = data;
         }
     }

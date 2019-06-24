@@ -19,7 +19,7 @@ using System;
 
 namespace SharpNES.SharedCode
 {
-    class CpuBus
+    public class CpuBus
     {
         public CpuBus()
         {

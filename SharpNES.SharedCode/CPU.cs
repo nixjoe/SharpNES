@@ -1,7 +1,7 @@
 ﻿using System;
 namespace SharpNES.SharedCode
 {
-	class CPU
+	public class CPU
 	{
 		private class Registers
 		{

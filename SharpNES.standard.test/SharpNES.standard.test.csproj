@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -12,4 +12,8 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SharpNES.standard\SharpNES.standard.csproj" />
+  </ItemGroup>
+  <Import Project="..\SharpNES.SharedCode\SharpNES.SharedCode.projitems" Label="Shared" Condition="Exists('..\SharpNES.SharedCode\SharpNES.SharedCode.projitems')" />
 </Project>
