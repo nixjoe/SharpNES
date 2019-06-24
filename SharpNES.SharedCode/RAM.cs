@@ -10,8 +10,8 @@ namespace SharpNES.SharedCode
     /// </summary>
     public class RAM
     {
-        private byte[] memory;
-        private int size;
+        private readonly byte[] memory;
+        private readonly int size;
         
         public RAM(int size)
         {
@@ -23,7 +23,7 @@ namespace SharpNES.SharedCode
         {
             if (address >= size)
             {
-                throw new ArgumentException("rying to access an address outside the specified range");
+                throw new ArgumentException("Trying to access an address outside the specified range");
             }
             return memory[address];
         }
@@ -32,7 +32,7 @@ namespace SharpNES.SharedCode
         {
             if (address >= size)
             {
-                throw new ArgumentException("rying to access an address outside the specified range");
+                throw new ArgumentException("Trying to access an address outside the specified range");
             }
             memory[address] = data;
         }
