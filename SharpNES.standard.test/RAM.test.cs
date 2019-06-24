@@ -5,9 +5,9 @@ using Address = System.UInt16;
 
 namespace SharpNES.standard.test
 {
-    public class CpuRamTest
+    public class RAMTest
     {
-        private CpuRam sut = new CpuRam();
+        private readonly RAM sut = new RAM(0x0800);
 
         [Theory]
         [InlineData(0x0000)]

@@ -8,12 +8,12 @@ namespace SharpNES.SharedCode
     /// CPUのWRAM領域やPPUのVRAM、スプライトRAMなどのメモリ領域を表現する抽象クラス
     /// 各コンポーネントはこのクラスを継承し、サイズ指定やアドレスチェックなどを実装していく。
     /// </summary>
-    public abstract class RAM
+    public class RAM
     {
         private byte[] memory;
         private int size;
-
-        protected RAM(int size)
+        
+        public RAM(int size)
         {
             this.size = size;
             memory = Enumerable.Repeat((byte) 0, size).ToArray();

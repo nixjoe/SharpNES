@@ -11,7 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CPU.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CpuBus.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CpuRam.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RAM.cs" />
   </ItemGroup>
 </Project>

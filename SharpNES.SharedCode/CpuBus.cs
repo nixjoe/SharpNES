@@ -21,9 +21,10 @@ namespace SharpNES.SharedCode
 {
     public class CpuBus
     {
-        private CpuRam wram;
+        private RAM wram;
 
-        public CpuBus(CpuRam wram)
+
+        public CpuBus(RAM wram)
         {
             this.wram = wram;
         }

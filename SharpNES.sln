@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpNES.standard", "SharpN
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{18063CAA-D783-43E2-9A7F-6796E0F590B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpNES.standard.test", "SharpNES.standard.test\SharpNES.standard.test.csproj", "{0E1C35C4-7FFB-457A-869C-A48C51ECDB1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpNES.standard.test", "SharpNES.standard.test\SharpNES.standard.test.csproj", "{0E1C35C4-7FFB-457A-869C-A48C51ECDB1C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{121744C4-DC2A-402E-9172-1E45E47FEC23}"
 EndProject
@@ -15,7 +15,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharpNES.SharedCode", "Shar
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		SharpNES.core\SharpNES.core.projitems*{9a8828b7-a481-4c3d-bcfb-760ea827fead}*SharedItemsImports = 13
+		SharpNES.SharedCode\SharpNES.SharedCode.projitems*{6e05ce2a-e888-499c-9ac9-d3285424047f}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
