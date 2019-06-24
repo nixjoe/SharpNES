@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpNES.standard", "SharpNES.standard\SharpNES.standard.csproj", "{A012569F-3D5F-4FE7-98CD-593247538203}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharpNES.core", "SharpNES.core\SharpNES.core.shproj", "{9A8828B7-A481-4C3D-BCFB-760EA827FEAD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{18063CAA-D783-43E2-9A7F-6796E0F590B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpNES.standard.test", "SharpNES.standard.test\SharpNES.standard.test.csproj", "{0E1C35C4-7FFB-457A-869C-A48C51ECDB1C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{121744C4-DC2A-402E-9172-1E45E47FEC23}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharpNES.SharedCode", "SharpNES.SharedCode\SharpNES.SharedCode.shproj", "{6E05CE2A-E888-499C-9AC9-D3285424047F}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -36,8 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A012569F-3D5F-4FE7-98CD-593247538203} = {121744C4-DC2A-402E-9172-1E45E47FEC23}
-		{9A8828B7-A481-4C3D-BCFB-760EA827FEAD} = {121744C4-DC2A-402E-9172-1E45E47FEC23}
 		{0E1C35C4-7FFB-457A-869C-A48C51ECDB1C} = {18063CAA-D783-43E2-9A7F-6796E0F590B6}
+		{6E05CE2A-E888-499C-9AC9-D3285424047F} = {121744C4-DC2A-402E-9172-1E45E47FEC23}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AA29137D-057E-4B9B-BEE3-4024B9771272}
