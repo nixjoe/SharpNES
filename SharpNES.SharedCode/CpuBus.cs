@@ -22,11 +22,12 @@ namespace SharpNES.SharedCode
     public class CpuBus
     {
         private RAM wram;
+        private Cartridge cartridge;
 
-
-        public CpuBus(RAM wram)
+        public CpuBus(RAM wram, Cartridge cartridge)
         {
             this.wram = wram;
+            this.cartridge = cartridge;
         }
 
         public byte Read(Address address)
@@ -35,14 +36,18 @@ namespace SharpNES.SharedCode
             {
                 case 0x0000:
                     // WRAM
-                    return this.wram.Read(address);
+                    return wram.Read(address);
                 case 0x2000:
                 // PPU
                 case 0x4000:
                 // APU, Controller I/O
                 case 0x8000:
                 case 0xC000:
-                // Program ROM
+                case 0xE000:
+                    // Program ROM
+                    return cartridge.ProgramRomSize == 1 ?
+                        cartridge.ProgramRom.Read((Address)(address & 0x3FFF)) :
+                        cartridge.ProgramRom.Read((Address)(address & 0x7FFF));
                 default:
                     throw new ArgumentException("Trying to access an address not included in the specification.");
             }
@@ -64,7 +69,7 @@ namespace SharpNES.SharedCode
                     return;
                 case 0x8000:
                 case 0xC000:
-                    // Program ROM
+                    // Program RAM?
                     return;
                 default:
                     throw new ArgumentException("Trying to access an address not included in the specification.");
