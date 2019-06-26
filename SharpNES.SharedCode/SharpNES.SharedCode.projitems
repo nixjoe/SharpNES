@@ -9,6 +9,7 @@
     <Import_RootNamespace>SharpNES.SharedCode</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Cartridge.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CPU.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CpuBus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RAM.cs" />
