@@ -36,6 +36,11 @@ namespace SharpNES.SharedCode
         }
 
 
+        /// <summary>
+        /// Interruptフラグを立てて割り込み禁止状態にする
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
         [OpcodeProperty(Opcode = 0x78, Cycle = 2, Mode = AddressingMode.Implied)]
         private void SEI(AddressingMode mode, Address address)
         {
@@ -111,6 +116,11 @@ namespace SharpNES.SharedCode
             bus.Write(address, registers.A);
         }
 
+        /// <summary>
+        /// Xレジスタのデータをインクリメント
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
         [OpcodeProperty(Opcode = 0xE8, Cycle = 2, Mode = AddressingMode.Implied)]
         private void INX(AddressingMode mode, Address address)
         {
@@ -118,6 +128,11 @@ namespace SharpNES.SharedCode
             SetZeroAndNegativeFlags(registers.X);
         }
 
+        /// <summary>
+        /// Yレジスタのデータをインクリメント
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
         [OpcodeProperty(Opcode = 0xCA, Cycle = 2, Mode = AddressingMode.Implied)]
         private void DEX(AddressingMode mode, Address address)
         {
@@ -125,6 +140,11 @@ namespace SharpNES.SharedCode
             SetZeroAndNegativeFlags(registers.X);
         }
 
+        /// <summary>
+        /// Xレジスタのデータをインクリメント
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
         [OpcodeProperty(Opcode = 0xC8, Cycle = 2, Mode = AddressingMode.Implied)]
         private void INY(AddressingMode mode, Address address)
         {
@@ -132,6 +152,11 @@ namespace SharpNES.SharedCode
             SetZeroAndNegativeFlags(registers.Y);
         }
         
+        /// <summary>
+        /// Yレジスタのデータをインクリメント
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
         [OpcodeProperty(Opcode = 0x88, Cycle = 2, Mode = AddressingMode.Implied)]
         private void DEY(AddressingMode mode, Address address)
         {
@@ -148,6 +173,33 @@ namespace SharpNES.SharedCode
         private void TXS(AddressingMode mode, Address address)
         {
             registers.S = registers.X;
+        }
+
+        /// <summary>
+        /// Zeroフラグがクリアされている場合は指定されたアドレスにジャンプする
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
+        [OpcodeProperty(Opcode = 0xD0, Cycle = 2, Mode = AddressingMode.Relative)]
+        private void BNE(AddressingMode mode, Address address)
+        {
+            if (!statusFlags.Zero)
+            {
+                // TODO サイクル調整
+                registers.PC = address;
+            }
+        }
+
+        /// <summary>
+        /// 指定されたアドレスにジャンプする
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
+        [OpcodeProperty(Opcode = 0x4C, Cycle = 2, Mode = AddressingMode.Absolute)]
+        [OpcodeProperty(Opcode = 0x6C, Cycle = 2, Mode = AddressingMode.Indirect)]
+        private void JMP(AddressingMode mode, Address address)
+        {
+            registers.PC = address;
         }
 
         private void SetZeroAndNegativeFlags(byte value)

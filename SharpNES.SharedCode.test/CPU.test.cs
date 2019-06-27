@@ -228,7 +228,7 @@ namespace SharpNES.standard.test
 
             sut.AsDynamic().INX(CPU.AddressingMode.Implied, (Address)0x0000);
 
-            registers.X.Is((byte)(x+1));
+            registers.X.Is((byte)(x + 1));
 
             if (x == 0x00)
             {
@@ -268,7 +268,7 @@ namespace SharpNES.standard.test
 
             sut.AsDynamic().INY(CPU.AddressingMode.Implied, (Address)0x0000);
 
-            registers.Y.Is((byte)(y+1));
+            registers.Y.Is((byte)(y + 1));
 
             if (y == 0x00)
             {
@@ -308,7 +308,7 @@ namespace SharpNES.standard.test
 
             sut.AsDynamic().DEX(CPU.AddressingMode.Implied, (Address)0x0000);
 
-            registers.X.Is((byte)(x-1));
+            registers.X.Is((byte)(x - 1));
 
             if (x == 0x00)
             {
@@ -349,7 +349,7 @@ namespace SharpNES.standard.test
 
             sut.AsDynamic().DEY(CPU.AddressingMode.Implied, (Address)0x0000);
 
-            registers.Y.Is((byte)(y-1));
+            registers.Y.Is((byte)(y - 1));
 
             if (y == 0xFF)
             {
@@ -374,6 +374,46 @@ namespace SharpNES.standard.test
                 statusFlags.Zero.IsFalse();
                 statusFlags.Negative.IsFalse();
 
+            }
+        }
+
+        [Fact]
+        public void JMP命令を実行するとプログラムカウンタに指定したアドレスが設定される()
+        {
+            const Address address = 0x8080;
+
+            var propertyInfo = sut.GetType().GetProperty("registers", BindingFlags.NonPublic | BindingFlags.Instance);
+            var registers = propertyInfo.GetValue(sut) as CPU.Registers;
+
+            sut.AsDynamic().JMP(CPU.AddressingMode.Absolute, address);
+
+            registers.PC.Is(address);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void BNE命令を実行するとZeroフラグが立っているときだけプログラムカウンタに指定したアドレスが設定される(bool zeroFlag)
+        {
+            var statusFlagsPropertyInfo = sut.GetType().GetProperty("statusFlags", BindingFlags.NonPublic | BindingFlags.Instance);
+            var statusFlags = statusFlagsPropertyInfo.GetValue(sut) as CPU.StatusFlags;
+            statusFlags.Zero = zeroFlag;
+
+            var registersPropertyInfo = sut.GetType().GetProperty("registers", BindingFlags.NonPublic | BindingFlags.Instance);
+            var registers = registersPropertyInfo.GetValue(sut) as CPU.Registers;
+            registers.PC = (Address) 0x0000;
+
+            const Address address = 0x8080;
+
+            sut.AsDynamic().BNE(CPU.AddressingMode.Relative, address);
+
+            if (zeroFlag)
+            {
+                registers.PC.Is((Address)0x0000);
+            }
+            else
+            {
+                registers.PC.Is(address);
             }
         }
     }
