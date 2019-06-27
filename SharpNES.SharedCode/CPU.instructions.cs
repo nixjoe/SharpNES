@@ -59,6 +59,11 @@ namespace SharpNES.SharedCode
             SetZeroAndNegativeFlags(registers.X);
         }
 
+        /// <summary>
+        /// 指定したアドレスのデータをYレジスタにロードする
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
         [OpcodeProperty(Opcode = 0xA2, Cycle = 2, Mode = AddressingMode.Immediate)]
         [OpcodeProperty(Opcode = 0xA6, Cycle = 3, Mode = AddressingMode.ZeroPage)]
         [OpcodeProperty(Opcode = 0xAE, Cycle = 4, Mode = AddressingMode.Absolute)]
@@ -89,6 +94,11 @@ namespace SharpNES.SharedCode
             SetZeroAndNegativeFlags(registers.A);
         }
 
+        /// <summary>
+        /// 指定したアドレスにAレジスタのデータをストアする
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
         [OpcodeProperty(Opcode = 0x81, Cycle = 6, Mode = AddressingMode.IndirectIndexed)]
         [OpcodeProperty(Opcode = 0x85, Cycle = 6, Mode = AddressingMode.ZeroPage)]
         [OpcodeProperty(Opcode = 0x8D, Cycle = 4, Mode = AddressingMode.Absolute)]
@@ -101,6 +111,39 @@ namespace SharpNES.SharedCode
             bus.Write(address, registers.A);
         }
 
+        [OpcodeProperty(Opcode = 0xE8, Cycle = 2, Mode = AddressingMode.Implied)]
+        private void INX(AddressingMode mode, Address address)
+        {
+            registers.X++;
+            SetZeroAndNegativeFlags(registers.X);
+        }
+
+        [OpcodeProperty(Opcode = 0xCA, Cycle = 2, Mode = AddressingMode.Implied)]
+        private void DEX(AddressingMode mode, Address address)
+        {
+            registers.X--;
+            SetZeroAndNegativeFlags(registers.X);
+        }
+
+        [OpcodeProperty(Opcode = 0xC8, Cycle = 2, Mode = AddressingMode.Implied)]
+        private void INY(AddressingMode mode, Address address)
+        {
+            registers.Y++;
+            SetZeroAndNegativeFlags(registers.Y);
+        }
+        
+        [OpcodeProperty(Opcode = 0x88, Cycle = 2, Mode = AddressingMode.Implied)]
+        private void DEY(AddressingMode mode, Address address)
+        {
+            registers.Y--;
+            SetZeroAndNegativeFlags(registers.Y);
+        }
+
+        /// <summary>
+        /// Xレジスタの値をSレジスタにロードする
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
         [OpcodeProperty(Opcode = 0x9A, Cycle = 2, Mode = AddressingMode.Implied)]
         private void TXS(AddressingMode mode, Address address)
         {
