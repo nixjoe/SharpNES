@@ -65,7 +65,7 @@ namespace SharpNES.standard.test.Properties {
         /// </summary>
         internal static byte[] sample1 {
             get {
-                object obj = ResourceManager.GetObject("sample1");
+                var obj = ResourceManager.GetObject("sample1") as byte[];
                 return ((byte[])(obj));
             }
         }
