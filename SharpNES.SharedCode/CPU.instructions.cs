@@ -51,7 +51,33 @@ namespace SharpNES.SharedCode
         private void LDX(AddressingMode mode, Address address)
         {
             registers.X = bus.Read(address);
-            SetZn(registers.X);
+            SetZeroAndNegativeFlags(registers.X);
+        }
+
+        [OpcodeProperty(Opcode = 0xA1, Cycle = 6, Mode = AddressingMode.IndirectIndexed)]
+        [OpcodeProperty(Opcode = 0xA5, Cycle = 3, Mode = AddressingMode.ZeroPage)]
+        [OpcodeProperty(Opcode = 0xA9, Cycle = 2, Mode = AddressingMode.Immediate)]
+        [OpcodeProperty(Opcode = 0xAD, Cycle = 4, Mode = AddressingMode.Absolute)]
+        [OpcodeProperty(Opcode = 0xB1, Cycle = 5, Mode = AddressingMode.IndexedIndirect)]
+        [OpcodeProperty(Opcode = 0xB5, Cycle = 4, Mode = AddressingMode.ZeroPageX)]
+        [OpcodeProperty(Opcode = 0xB9, Cycle = 4, Mode = AddressingMode.AbsoluteY)]
+        [OpcodeProperty(Opcode = 0xBD, Cycle = 4, Mode = AddressingMode.AbsoluteX)]
+        private void LDA(AddressingMode mode, Address address)
+        {
+            registers.A = bus.Read(address);
+            SetZeroAndNegativeFlags(registers.A);
+        }
+
+        [OpcodeProperty(Opcode = 0x81, Cycle = 6, Mode = AddressingMode.IndirectIndexed)]
+        [OpcodeProperty(Opcode = 0x85, Cycle = 6, Mode = AddressingMode.ZeroPage)]
+        [OpcodeProperty(Opcode = 0x8D, Cycle = 6, Mode = AddressingMode.Absolute)]
+        [OpcodeProperty(Opcode = 0x91, Cycle = 6, Mode = AddressingMode.IndexedIndirect)]
+        [OpcodeProperty(Opcode = 0x95, Cycle = 6, Mode = AddressingMode.ZeroPageX)]
+        [OpcodeProperty(Opcode = 0x99, Cycle = 6, Mode = AddressingMode.AbsoluteY)]
+        [OpcodeProperty(Opcode = 0x9D, Cycle = 6, Mode = AddressingMode.AbsoluteX)]
+        private void STA(AddressingMode mode, Address address)
+        {
+            bus.Write(address, registers.A);
         }
 
         [OpcodeProperty(Opcode = 0x9A, Cycle = 2, Mode = AddressingMode.Implied)]
@@ -60,7 +86,7 @@ namespace SharpNES.SharedCode
             registers.S = registers.X;
         }
 
-        private void SetZn(byte value)
+        private void SetZeroAndNegativeFlags(byte value)
         {
             statusFlags.Zero = value == 0;
             statusFlags.Negative = ((value >> 7) & 1) == 1;
