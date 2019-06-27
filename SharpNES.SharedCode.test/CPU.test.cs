@@ -93,6 +93,61 @@ namespace SharpNES.standard.test
         }
 
         [Fact]
+        public void LDY命令を実行するとバス経由で読み取った値がYレジスタにロードされる()
+        {
+            const byte data = 0x20;
+            var busMock = new Mock<ICpuBus>();
+            busMock.Setup(bus => bus.Read(0x0000))
+                .Returns(data);
+            sut = new CPU(busMock.Object);
+            sut.AsDynamic().LDY(CPU.AddressingMode.Immediate, (Address) 0x0000);
+
+            var propertyInfo = sut.GetType().GetProperty("registers", BindingFlags.NonPublic | BindingFlags.Instance);
+            var registers = propertyInfo.GetValue(sut) as CPU.Registers;
+            registers.Y.Is(data);
+        }
+
+        [Fact]
+        public void LDY命令を実行したときYレジスタのビット7が1ならNegativeフラグが立つ()
+        {
+            const byte data = 0xFF;
+
+            var busMock = new Mock<ICpuBus>();
+            busMock.Setup(bus => bus.Read(0x0000))
+                .Returns(data);
+            sut = new CPU(busMock.Object);
+            sut.AsDynamic().LDY(CPU.AddressingMode.Immediate, (Address) 0x0000);
+
+            var registersPropertyInfo = sut.GetType().GetProperty("registers", BindingFlags.NonPublic | BindingFlags.Instance);
+            var registers = registersPropertyInfo.GetValue(sut) as CPU.Registers;
+            registers.Y.Is(data);
+
+            var statusFlagsPropertyInfo = sut.GetType().GetProperty("statusFlags", BindingFlags.NonPublic | BindingFlags.Instance);
+            var statusFlags = statusFlagsPropertyInfo.GetValue(sut) as CPU.StatusFlags;
+            statusFlags.Negative.IsTrue();
+        }
+
+        [Fact]
+        public void LDY命令を実行したときYレジスタに0がロードされたときはZeroフラグが立つ()
+        {
+            const byte data = 0x00;
+
+            var busMock = new Mock<ICpuBus>();
+            busMock.Setup(bus => bus.Read(0x0000))
+                .Returns(data);
+            sut = new CPU(busMock.Object);
+            sut.AsDynamic().LDY(CPU.AddressingMode.Immediate, (Address) 0x0000);
+
+            var registersPropertyInfo = sut.GetType().GetProperty("registers", BindingFlags.NonPublic | BindingFlags.Instance);
+            var registers = registersPropertyInfo.GetValue(sut) as CPU.Registers;
+            registers.Y.Is(data);
+
+            var statusFlagsPropertyInfo = sut.GetType().GetProperty("statusFlags", BindingFlags.NonPublic | BindingFlags.Instance);
+            var statusFlags = statusFlagsPropertyInfo.GetValue(sut) as CPU.StatusFlags;
+            statusFlags.Zero.IsTrue();
+        }
+
+        [Fact]
         public void LDA命令を実行するとバス経由で読み取った値がAレジスタにロードされる()
         {
             const byte data = 0x20;

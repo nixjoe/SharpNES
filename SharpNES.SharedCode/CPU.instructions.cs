@@ -43,6 +43,11 @@ namespace SharpNES.SharedCode
         }
 
 
+        /// <summary>
+        /// 指定したアドレスのデータをXレジスタにロードする
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
         [OpcodeProperty(Opcode = 0xA2, Cycle = 2, Mode = AddressingMode.Immediate)]
         [OpcodeProperty(Opcode = 0xA6, Cycle = 3, Mode = AddressingMode.ZeroPage)]
         [OpcodeProperty(Opcode = 0xAE, Cycle = 4, Mode = AddressingMode.Absolute)]
@@ -54,6 +59,22 @@ namespace SharpNES.SharedCode
             SetZeroAndNegativeFlags(registers.X);
         }
 
+        [OpcodeProperty(Opcode = 0xA2, Cycle = 2, Mode = AddressingMode.Immediate)]
+        [OpcodeProperty(Opcode = 0xA6, Cycle = 3, Mode = AddressingMode.ZeroPage)]
+        [OpcodeProperty(Opcode = 0xAE, Cycle = 4, Mode = AddressingMode.Absolute)]
+        [OpcodeProperty(Opcode = 0xB2, Cycle = 4, Mode = AddressingMode.ZeroPageY)]
+        [OpcodeProperty(Opcode = 0xBE, Cycle = 4, Mode = AddressingMode.AbsoluteY)]
+        private void LDY(AddressingMode mode, Address address)
+        {
+            registers.Y = bus.Read(address);
+            SetZeroAndNegativeFlags(registers.Y);
+        }
+
+        /// <summary>
+        /// 指定したアドレスのデータをAレジスタにロードする
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="address"></param>
         [OpcodeProperty(Opcode = 0xA1, Cycle = 6, Mode = AddressingMode.IndirectIndexed)]
         [OpcodeProperty(Opcode = 0xA5, Cycle = 3, Mode = AddressingMode.ZeroPage)]
         [OpcodeProperty(Opcode = 0xA9, Cycle = 2, Mode = AddressingMode.Immediate)]
@@ -70,11 +91,11 @@ namespace SharpNES.SharedCode
 
         [OpcodeProperty(Opcode = 0x81, Cycle = 6, Mode = AddressingMode.IndirectIndexed)]
         [OpcodeProperty(Opcode = 0x85, Cycle = 6, Mode = AddressingMode.ZeroPage)]
-        [OpcodeProperty(Opcode = 0x8D, Cycle = 6, Mode = AddressingMode.Absolute)]
-        [OpcodeProperty(Opcode = 0x91, Cycle = 6, Mode = AddressingMode.IndexedIndirect)]
-        [OpcodeProperty(Opcode = 0x95, Cycle = 6, Mode = AddressingMode.ZeroPageX)]
-        [OpcodeProperty(Opcode = 0x99, Cycle = 6, Mode = AddressingMode.AbsoluteY)]
-        [OpcodeProperty(Opcode = 0x9D, Cycle = 6, Mode = AddressingMode.AbsoluteX)]
+        [OpcodeProperty(Opcode = 0x8D, Cycle = 4, Mode = AddressingMode.Absolute)]
+        [OpcodeProperty(Opcode = 0x91, Cycle = 5, Mode = AddressingMode.IndexedIndirect)]
+        [OpcodeProperty(Opcode = 0x95, Cycle = 5, Mode = AddressingMode.ZeroPageX)]
+        [OpcodeProperty(Opcode = 0x99, Cycle = 3, Mode = AddressingMode.AbsoluteY)]
+        [OpcodeProperty(Opcode = 0x9D, Cycle = 4, Mode = AddressingMode.AbsoluteX)]
         private void STA(AddressingMode mode, Address address)
         {
             bus.Write(address, registers.A);
