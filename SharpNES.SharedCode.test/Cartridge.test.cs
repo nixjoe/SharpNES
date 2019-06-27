@@ -12,7 +12,7 @@ namespace SharpNES.standard.test
 
         public CartridgeTest()
         {
-            var obj = Resources.ResourceManager.GetObject("sample1", CultureInfo.CurrentCulture);
+            var obj = Resources.ResourceManager.GetObject("sample1");
             var binaryStream = new MemoryStream((byte[])obj);
             sut = new Cartridge(binaryStream);
         }
