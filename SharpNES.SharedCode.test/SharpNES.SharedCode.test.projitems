@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>9b1219d4-3c0b-45cb-8383-84c31bd1fe70</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SharpNES.SharedCode.test</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Cartridge.test.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChainingAssertion.xunit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CPU.test.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CpuBus.test.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RAM.test.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ROM.test.cs" />
+  </ItemGroup>
+</Project>

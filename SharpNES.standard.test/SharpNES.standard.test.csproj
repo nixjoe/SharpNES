@@ -32,4 +32,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <Import Project="..\SharpNES.SharedCode.test\SharpNES.SharedCode.test.projitems" Label="Shared" />
 </Project>
