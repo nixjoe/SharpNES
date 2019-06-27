@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Cartridge.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CPU.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CPU.instructions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CpuBus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RAM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ROM.cs" />

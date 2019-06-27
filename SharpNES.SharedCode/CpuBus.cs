@@ -19,7 +19,13 @@ using System;
 
 namespace SharpNES.SharedCode
 {
-    public class CpuBus
+    public interface ICpuBus
+    {
+        byte Read(Address address);
+        void Write(Address address, byte data);
+    }
+
+    public class CpuBus : ICpuBus
     {
         private RAM wram;
         private Cartridge cartridge;

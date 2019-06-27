@@ -1,10 +1,11 @@
-﻿using Address = System.UInt16;
+﻿using System.Security.Cryptography.X509Certificates;
+using Address = System.UInt16;
 
 namespace SharpNES.SharedCode
 {
-    public class CPU
+    public partial class CPU
     {
-        private enum AddressingMode
+        internal enum AddressingMode
         {
             Absolute,
             AbsoluteX,
@@ -21,16 +22,16 @@ namespace SharpNES.SharedCode
             ZeroPageY,
         }
 
-        private delegate void Instruction(AddressingMode mode, Address address);
+        private delegate void InstructionFunc(AddressingMode mode, Address address);
 
-        private class OpcodeProperties
+        private class Instruction
         {
-            private Instruction instruction;
-            private AddressingMode addressingMode;
-            private int cycle;
+            public InstructionFunc InstructionFunc { get; set; }
+            public AddressingMode AddressingMode { get; set; }
+            public int Cycle { get; set; }
         }
 
-        private class Registers
+        internal class Registers
         {
             public byte A { get; set; }
             public byte X { get; set; }
@@ -39,42 +40,35 @@ namespace SharpNES.SharedCode
             public ushort PC { get; set; }
         }
 
-        private Registers registers;
-        private CpuBus bus;
+        internal class StatusFlags
+        {
+            public bool Carry { get; set; }
+            public bool Zero { get; set; }
+            public bool Interrupt { get; set; }
+            public bool Decimal { get; set; }
+            public bool Break { get; set; }
+            public bool Overflow { get; set; }
+            public bool Negative { get; set; }
+        }
 
-        private OpcodeProperties[] opcodePorpertiesList = {
-            null, null,
-        };
+        private ICpuBus bus;
+
+        private Registers registers { get; }
+        private StatusFlags statusFlags { get; }
+        private Instruction[] instructionSet = new Instruction[0xFF];
 
 
-        private int[] instructionCycles = {
-            7, 6, 2, 8, 3, 3, 5, 5, 3, 2, 2, 2, 4, 4, 6, 6,
-            2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,
-            6, 6, 2, 8, 3, 3, 5, 5, 4, 2, 2, 2, 4, 4, 6, 6,
-            2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,
-            6, 6, 2, 8, 3, 3, 5, 5, 3, 2, 2, 2, 3, 4, 6, 6,
-            2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,
-            6, 6, 2, 8, 3, 3, 5, 5, 4, 2, 2, 2, 5, 4, 6, 6,
-            2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,
-            2, 6, 2, 6, 3, 3, 3, 3, 2, 2, 2, 2, 4, 4, 4, 4,
-            2, 6, 2, 6, 4, 4, 4, 4, 2, 5, 2, 5, 5, 5, 5, 5,
-            2, 6, 2, 6, 3, 3, 3, 3, 2, 2, 2, 2, 4, 4, 4, 4,
-            2, 5, 2, 5, 4, 4, 4, 4, 2, 4, 2, 4, 4, 4, 4, 4,
-            2, 6, 2, 8, 3, 3, 5, 5, 2, 2, 2, 2, 4, 4, 6, 6,
-            2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,
-            2, 6, 2, 8, 3, 3, 5, 5, 2, 2, 2, 2, 4, 4, 6, 6,
-            2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,
-        };
-
-        public CPU(CpuBus bus)
+        public CPU(ICpuBus bus)
         {
             registers = new Registers();
+            statusFlags = new StatusFlags();
             this.bus = bus;
+            InitializeInstructionSet();
         }
 
         public void Reset()
         {
-            // TODO プログラムカウンタの初期値は0xFFFCから読んでくる
+            registers.PC = bus.Read(0xFFFC);
             registers.S = 0xFD;
             registers.A = 0;
             registers.X = 0;
@@ -89,5 +83,6 @@ namespace SharpNES.SharedCode
             // TODO アドレッシングモードから処理対象のアドレスを解析
             // TODO 命令の実行
         }
+
     }
 }
