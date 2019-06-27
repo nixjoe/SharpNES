@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using SharpNES.SharedCode;
 using SharpNES.standard.test.Properties;
 using Xunit;
@@ -11,7 +12,8 @@ namespace SharpNES.standard.test
 
         public CartridgeTest()
         {
-            var binaryStream = new MemoryStream(Resources.sample1);
+            var obj = Resources.ResourceManager.GetObject("sample1", CultureInfo.CurrentCulture);
+            var binaryStream = new MemoryStream((byte[])obj);
             sut = new Cartridge(binaryStream);
         }
 

@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.IO;
+
 namespace SharpNES.standard.test.Properties {
     using System;
     
@@ -64,7 +66,8 @@ namespace SharpNES.standard.test.Properties {
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] sample1 {
-            get {
+            get
+            {
                 object obj = ResourceManager.GetObject("sample1", resourceCulture);
                 return ((byte[])(obj));
             }
