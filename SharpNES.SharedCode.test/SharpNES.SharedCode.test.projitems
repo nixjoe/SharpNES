@@ -9,11 +9,11 @@
     <Import_RootNamespace>SharpNES.SharedCode.test</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Cartridge.test.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChainingAssertion.xunit.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CPU.test.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CpuBus.test.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RAM.test.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ROM.test.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unit\Cartridge.test.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unit\ChainingAssertion.xunit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unit\CPU.test.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unit\CpuBus.test.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unit\RAM.test.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unit\ROM.test.cs" />
   </ItemGroup>
 </Project>
