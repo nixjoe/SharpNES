@@ -10,4 +10,4 @@ env:
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
 script:
   - dotnet restore
-  - dotnet test SharpNES.standard.test
+  - dotnet test --filter DisplayName!~SharpNES.standard.test.CartridgeTest
