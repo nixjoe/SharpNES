@@ -85,37 +85,51 @@ namespace SharpNES.SharedCode
 
         public void Reset()
         {
-            registers.PC = bus.Read(0xFFFC);
+            registers.PC = fetchWord(0xFFFC);
             registers.S = 0xFD;
             registers.A = 0;
             registers.X = 0;
             registers.Y = 0;
-            statusFlags.SetStatusFlags((byte)0x24);
+            statusFlags.SetStatusFlags((byte) 0x24);
         }
 
         public int ExecuteInstruction()
         {
             // TODO 割り込み処理
-
-            var opcode = fetch(registers.PC);
+            var opcode = readByte(registers.PC);
             var instruction = instructionSet[opcode];
+
             var address = getAddress(instruction.AddressingMode);
+
             instruction.InstructionFunc(instruction.AddressingMode, address);
+
             // TODO サイクルの調整
             return instruction.Cycle;
+        }
+
+
+        private byte readByte(Address address)
+        {
+            return bus.Read(address);
         }
 
         private byte fetch(Address address)
         {
             registers.PC++;
-            return bus.Read(address);
+            return readByte(address);
+        }
+
+        private Address readWord(Address address)
+        {
+            var lower = readByte(address);
+            var upper = readByte((Address) (address + 1));
+            return (Address) (upper << 8 | lower);
         }
 
         private Address fetchWord(Address address)
         {
-            var lower = fetch(address);
-            var upper = fetch((Address)(address + 1));
-            return (Address)(upper << 8 | lower);
+            registers.PC += 2;
+            return readWord(address);
         }
 
         private Address getAddress(AddressingMode mode)
@@ -123,25 +137,42 @@ namespace SharpNES.SharedCode
             switch (mode)
             {
                 case AddressingMode.Absolute:
-                    return fetchWord(registers.PC);
+                {
+                    var address = readWord((Address) (registers.PC + 1));
+                    registers.PC += 3;
+                    return address;
+                }
+
                 case AddressingMode.AbsoluteX:
-                    {
-                        var address = fetchWord(registers.PC);
-                        return (Address)(address + registers.X);
-                        // TODO サイクル調整
-                    }
+                {
+                    var address = readWord((Address)(registers.PC + 1));
+                    registers.PC += 3;
+                    return (Address) (address + registers.X);
+                    // TODO サイクル調整
+                }
+
                 case AddressingMode.AbsoluteY:
-                    {
-                        var address = fetchWord(registers.PC);
-                        return (Address)(address + registers.Y);
-                        // TODO サイクル調整
-                    }
+                {
+                    var address = readWord((Address)(registers.PC +1));
+                    registers.PC += 3;
+                    return (Address) (address + registers.Y);
+                    // TODO サイクル調整
+                }
+
                 case AddressingMode.Accumulator:
                     return 0x0000;
+
                 case AddressingMode.Immediate:
-                    return fetch(registers.PC);
+                {
+                    var address = (Address) (registers.PC + 1);
+                    registers.PC += 2;
+                    return address;
+                }
+
                 case AddressingMode.Implied:
-                    return 0x0000;  // Impliedはアドレスを使用しないのでダミーを返す
+                    registers.PC += 1;
+                    return 0x0000; // Impliedはアドレスを使用しないのでダミーを返す
+
                 case AddressingMode.IndexedIndirect:
                     break;
                 case AddressingMode.Indirect:
@@ -149,10 +180,14 @@ namespace SharpNES.SharedCode
                 case AddressingMode.IndirectIndexed:
                     break;
                 case AddressingMode.Relative:
-                    {
-                        var offset = fetch(registers.PC);
-                        return (Address)(registers.PC + offset);
-                    }
+                {
+                    var offset = readByte((Address) (registers.PC + 1));
+                    registers.PC += 2;
+                    return offset < 0x80
+                        ? (Address) (registers.PC + offset)
+                        : (Address) (registers.PC + offset - 0x0100);
+                }
+
                 case AddressingMode.ZeroPage:
                     break;
                 case AddressingMode.ZeroPageX:
@@ -162,6 +197,7 @@ namespace SharpNES.SharedCode
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
+
             throw new NotImplementedException();
         }
     }

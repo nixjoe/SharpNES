@@ -47,6 +47,7 @@ namespace SharpNES.SharedCode
                 // PPU
                 case 0x4000:
                 // APU, Controller I/O
+                case 0x6000:
                 case 0x8000:
                 case 0xC000:
                 case 0xE000:
@@ -72,6 +73,8 @@ namespace SharpNES.SharedCode
                     return;
                 case 0x4000:
                     // APU, Controller I/O
+                    return;
+                case 0x6000:
                     return;
                 case 0x8000:
                 case 0xC000:

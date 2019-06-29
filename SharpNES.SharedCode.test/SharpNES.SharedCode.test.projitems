@@ -9,6 +9,7 @@
     <Import_RootNamespace>SharpNES.SharedCode.test</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CPUforHelloWorld.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Unit\Cartridge.test.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Unit\ChainingAssertion.xunit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Unit\CPU.test.cs" />

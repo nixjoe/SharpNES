@@ -47,7 +47,6 @@ namespace SharpNES.SharedCode
             statusFlags.Interrupt = true;
         }
 
-
         /// <summary>
         /// 指定したアドレスのデータをXレジスタにロードする
         /// </summary>
@@ -60,7 +59,7 @@ namespace SharpNES.SharedCode
         [OpcodeProperty(Opcode = 0xBE, Cycle = 4, Mode = AddressingMode.AbsoluteY)]
         private void LDX(AddressingMode mode, Address address)
         {
-            registers.X = bus.Read(address);
+            registers.X = readByte(address);
             SetZeroAndNegativeFlags(registers.X);
         }
 
@@ -69,11 +68,11 @@ namespace SharpNES.SharedCode
         /// </summary>
         /// <param name="mode"></param>
         /// <param name="address"></param>
-        [OpcodeProperty(Opcode = 0xA2, Cycle = 2, Mode = AddressingMode.Immediate)]
-        [OpcodeProperty(Opcode = 0xA6, Cycle = 3, Mode = AddressingMode.ZeroPage)]
-        [OpcodeProperty(Opcode = 0xAE, Cycle = 4, Mode = AddressingMode.Absolute)]
-        [OpcodeProperty(Opcode = 0xB2, Cycle = 4, Mode = AddressingMode.ZeroPageY)]
-        [OpcodeProperty(Opcode = 0xBE, Cycle = 4, Mode = AddressingMode.AbsoluteY)]
+        [OpcodeProperty(Opcode = 0xA0, Cycle = 2, Mode = AddressingMode.Immediate)]
+        [OpcodeProperty(Opcode = 0xA4, Cycle = 3, Mode = AddressingMode.ZeroPage)]
+        [OpcodeProperty(Opcode = 0xAC, Cycle = 4, Mode = AddressingMode.Absolute)]
+        [OpcodeProperty(Opcode = 0xB4, Cycle = 4, Mode = AddressingMode.ZeroPageX)]
+        [OpcodeProperty(Opcode = 0xBC, Cycle = 4, Mode = AddressingMode.AbsoluteX)]
         private void LDY(AddressingMode mode, Address address)
         {
             registers.Y = bus.Read(address);
