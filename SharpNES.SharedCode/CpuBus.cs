@@ -28,11 +28,13 @@ namespace SharpNES.SharedCode
     public class CpuBus : ICpuBus
     {
         private RAM wram;
+        private PPU ppu;
         private Cartridge cartridge;
 
-        public CpuBus(RAM wram, Cartridge cartridge)
+        public CpuBus(RAM wram, PPU ppu ,Cartridge cartridge)
         {
             this.wram = wram;
+            this.ppu = ppu;
             this.cartridge = cartridge;
         }
 
@@ -66,10 +68,11 @@ namespace SharpNES.SharedCode
             {
                 case 0x0000:
                     // WRAM
-                    this.wram.Write(address, data);
+                    wram.Write(address, data);
                     return;
                 case 0x2000:
                     // PPU
+                    ppu.Write(address, data);
                     return;
                 case 0x4000:
                     // APU, Controller I/O

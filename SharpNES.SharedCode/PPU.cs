@@ -12,13 +12,13 @@ namespace SharpNES.SharedCode
 
             public void SetFrags(byte data)
             {
-                    register = data;
+                register = data;
             }
 
             /// <summary>
             /// PPUDATA($2007)に書き込んだ時のアドレスインクリメント値
             /// </summary>
-            public Address AddressIncrement => ((register >> 2) & 0x01) == 1 ? (ushort) 0x20 : (ushort) 0x01;
+            public Address AddressIncrement => ((register >> 2) & 0x01) == 1 ? (ushort)0x20 : (ushort)0x01;
         }
 
         internal class MaskRegister
@@ -33,22 +33,25 @@ namespace SharpNES.SharedCode
 
         private int cycle;
 
+        /* PPUレジスタ */
+        private readonly ControlRegister controlRegister = new ControlRegister();
+        private readonly MaskRegister maskRegister = new MaskRegister();
 
-        private RAM vram;
-        private RAM spriteRam;
+        /* PPU内部メモリ */
+        private readonly RAM videoRam;
+        private readonly RAM spriteRam;
+        private readonly RAM paletteRam;
 
-        private ControlRegister controlRegister = new ControlRegister();
-        private MaskRegister maskRegister = new MaskRegister();
+        /* VRAM操作関連 */
+        private bool isAlreadySetUpperVideoRamAddress = false;
+        private bool isCompleteVideoRamAddress = false;
+        private Address currentVideoRamAddress;
 
-        // VRAMアドレス
-        private bool isAlreadySetUpperVramAddress = false;
-        private bool isCompleteVramAddress = false;
-        private Address currentVramAddress;
-
-        public PPU(RAM vram, RAM spriteRam)
+        public PPU()
         {
-            this.vram = vram;
-            this.spriteRam = spriteRam;
+            paletteRam = new RAM(0x20); // パレットRAMは32Byte
+            spriteRam = new RAM(0x100); // スプライトRAMは256Byte
+            videoRam = new RAM(0x0800); // ビデオRAMは2KByte
         }
 
         public void Write(Address address, byte data)
@@ -82,13 +85,13 @@ namespace SharpNES.SharedCode
 
             if (address == 0x2006)
             {
-                WriteVramAddress(data);
+                WriteVideoRamAddress(data);
                 return;
             }
 
             if (address == 0x2007)
             {
-                WriteVramData(data);
+                WriteVideoRamData(data);
                 return;
             }
         }
@@ -99,41 +102,43 @@ namespace SharpNES.SharedCode
         /// 最初がアドレスの上位バイトで、2回目がアドレスの下位バイドとなる。
         /// </summary>
         /// <param name="data"></param>
-        private void WriteVramAddress(byte data)
+        private void WriteVideoRamAddress(byte data)
         {
-            if (isAlreadySetUpperVramAddress)
+            if (isAlreadySetUpperVideoRamAddress)
             {
-                currentVramAddress += (Address) data;
-                isAlreadySetUpperVramAddress = false;
-                isCompleteVramAddress = true;
+                currentVideoRamAddress += (Address)data;
+                isAlreadySetUpperVideoRamAddress = false;
+                isCompleteVideoRamAddress = true;
                 return;
             }
 
-            currentVramAddress = (Address)(data << 8);
-            isAlreadySetUpperVramAddress = true;
-            isCompleteVramAddress = false;
+            currentVideoRamAddress = (Address)(data << 8);
+            isAlreadySetUpperVideoRamAddress = true;
+            isCompleteVideoRamAddress = false;
         }
 
         /// <summary>
         /// PPUが持つVRAMへデータを書き込む。
         /// </summary>
         /// <param name="data"></param>
-        private void WriteVramData(byte data)
+        private void WriteVideoRamData(byte data)
         {
-            if (currentVramAddress >= 0x2000)
+            if (currentVideoRamAddress >= 0x2000)
             {
-                if (0x3f00 <= currentVramAddress && currentVramAddress < 0x4000)
+                if (0x3f00 <= currentVideoRamAddress && currentVideoRamAddress < 0x4000)
                 {
                     // パレットテーブルへの書き込み
+                    var address = (Address)(currentVideoRamAddress & 0x1F);
+                    paletteRam.Write(address, data);
                 }
                 else
                 {
                     // ネームテーブル、属性テーブルへの書き込み
                     // 0x3000 - 0x3EFF間のミラーリングを考慮
-                     var address = 0x3000 <= currentVramAddress && currentVramAddress < 0x3F00
-                        ? (Address)(currentVramAddress - 0x3000)
-                        : (Address)(currentVramAddress - 0x2000);
-                    vram.Write(address, data);
+                    var address = 0x3000 <= currentVideoRamAddress && currentVideoRamAddress < 0x3F00
+                       ? (Address)(currentVideoRamAddress - 0x3000)
+                       : (Address)(currentVideoRamAddress - 0x2000);
+                    videoRam.Write(address, data);
                 }
             }
             else
@@ -141,7 +146,17 @@ namespace SharpNES.SharedCode
                 // TODO キャラクタRAMへの書き込み
             }
 
-            currentVramAddress += controlRegister.AddressIncrement;
+            currentVideoRamAddress += controlRegister.AddressIncrement;
+        }
+
+        private Address GetPaletteRamAddress(Address address)
+        {
+            // 0x3F10, 0x3F14, 0x3F18, 0x3F1Cは
+            // 0x3F00, 0x3F04, 0x3F08, 0x3F0Cのミラー
+            var a = address & 0x1F;
+            var isSpriteMirror = (a == 0x10) || (a == 0x14) || (a == 0x18) || (a == 0x1C);
+            return isSpriteMirror ? (Address)(a - 0x10) : (Address)a;
+
         }
     }
 }

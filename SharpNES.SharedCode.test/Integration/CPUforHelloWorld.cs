@@ -12,13 +12,14 @@ namespace SharpNES.standard.test.Integration
     public class CPUforHelloWorld
     {
         private CPU cpu;
-        
+
         public CPUforHelloWorld()
         {
             var rom = Resources.ResourceManager.GetObject("sample1");
             var cartridge = new Cartridge(new MemoryStream((byte[])rom));
             var ram = new RAM(0x0800);
-            var bus = new CpuBus(ram, cartridge);
+            var ppu = new PPU();
+            var bus = new CpuBus(ram, ppu, cartridge);
             cpu = new CPU(bus);
         }
 
