@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
 using Address = System.UInt16;
 
 namespace SharpNES.SharedCode
