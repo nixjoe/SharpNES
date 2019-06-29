@@ -47,6 +47,9 @@ namespace SharpNES.SharedCode
         private bool isCompleteVideoRamAddress = false;
         private Address currentVideoRamAddress;
 
+        /* スプライトRAM操作関連 */
+        private Address currentSpriteRamAddress;
+
         public PPU()
         {
             paletteRam = new RAM(0x20); // パレットRAMは32Byte
@@ -70,11 +73,13 @@ namespace SharpNES.SharedCode
 
             if (address == 0x2003)
             {
+                SetSpriteRamAddress(data);
                 return;
             }
 
             if (address == 0x2004)
             {
+                WriteSpriteRamData(data);
                 return;
             }
 
@@ -85,7 +90,7 @@ namespace SharpNES.SharedCode
 
             if (address == 0x2006)
             {
-                WriteVideoRamAddress(data);
+                SetVideoRamAddress(data);
                 return;
             }
 
@@ -97,12 +102,31 @@ namespace SharpNES.SharedCode
         }
 
         /// <summary>
+        /// CPUからスプライトRAMを操作するために、操作対象のスプライトRAMアドレスを設定する。
+        /// </summary>
+        /// <param name="data"></param>
+        private void SetSpriteRamAddress(byte data)
+        {
+            currentSpriteRamAddress = data;
+        }
+
+        /// <summary>
+        /// スプライトRAMにデータを書き込む。
+        /// </summary>
+        /// <param name="data"></param>
+        private void WriteSpriteRamData(byte data)
+        {
+            spriteRam.Write(currentVideoRamAddress, data);
+            currentVideoRamAddress += 0x01;
+        }
+
+        /// <summary>
         /// CPUからVRAMを操作するために、操作対象のVRAMアドレスを設定する。
         /// NESの6502の仕様では、0x2006に二回書き込むことによってVRAMのアドレスを指定する。
         /// 最初がアドレスの上位バイトで、2回目がアドレスの下位バイドとなる。
         /// </summary>
         /// <param name="data"></param>
-        private void WriteVideoRamAddress(byte data)
+        private void SetVideoRamAddress(byte data)
         {
             if (isAlreadySetUpperVideoRamAddress)
             {
@@ -148,6 +172,7 @@ namespace SharpNES.SharedCode
 
             currentVideoRamAddress += controlRegister.AddressIncrement;
         }
+
 
         private Address GetPaletteRamAddress(Address address)
         {

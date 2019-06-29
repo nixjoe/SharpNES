@@ -28,7 +28,8 @@ namespace SharpNES.standard.test.Integration
         {
             cpu.Reset();
             var count = 0;
-            while (count < 200)
+            // while (count < 200)
+            while (true)
             {
                 var cycle = cpu.ExecuteInstruction();
                 count++;
