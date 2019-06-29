@@ -4,7 +4,7 @@ using Address = System.UInt16;
 
 namespace SharpNES.SharedCode
 {
-    public class PPU
+    public partial class PPU
     {
         internal class ControlRegister
         {
@@ -31,8 +31,6 @@ namespace SharpNES.SharedCode
             }
         }
 
-        private int cycle;
-
         /* PPUレジスタ */
         private readonly ControlRegister controlRegister = new ControlRegister();
         private readonly MaskRegister maskRegister = new MaskRegister();
@@ -55,6 +53,9 @@ namespace SharpNES.SharedCode
             paletteRam = new RAM(0x20); // パレットRAMは32Byte
             spriteRam = new RAM(0x100); // スプライトRAMは256Byte
             videoRam = new RAM(0x0800); // ビデオRAMは2KByte
+
+            cycle = 0;
+            scanLine = 0;
         }
 
         public void Write(Address address, byte data)
