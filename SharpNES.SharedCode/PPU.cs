@@ -18,7 +18,7 @@ namespace SharpNES.SharedCode
             /// <summary>
             /// PPUDATA($2007)に書き込んだ時のアドレスインクリメント値
             /// </summary>
-            public Address AddressIncrement => ((register >> 2) & 0x01) == 1 ? (ushort)0x20 : (ushort)0x01;
+            public Address AddressIncrement => ((register >> 2) & 0x01) == 1 ? (Address)0x20 : (Address)0x01;
         }
 
         internal class MaskRegister
@@ -29,7 +29,14 @@ namespace SharpNES.SharedCode
             {
                 register = data;
             }
+
+            public Address BackgroundPatternTableAddress =>
+                ((register >> 4) & 0x01) == 1 ? (Address)0x1000 : (Address)0x0000;
         }
+
+        /* カートリッジのキャラクタROM */
+        private ROM characterROM;
+
 
         /* PPUレジスタ */
         private readonly ControlRegister controlRegister = new ControlRegister();
@@ -48,11 +55,13 @@ namespace SharpNES.SharedCode
         /* スプライトRAM操作関連 */
         private Address currentSpriteRamAddress;
 
-        public PPU()
+        public PPU(Cartridge cartridge)
         {
             paletteRam = new RAM(0x20); // パレットRAMは32Byte
             spriteRam = new RAM(0x100); // スプライトRAMは256Byte
             videoRam = new RAM(0x0800); // ビデオRAMは2KByte
+
+            characterROM = cartridge.CharacterRom;
 
             cycle = 0;
             scanLine = 0;

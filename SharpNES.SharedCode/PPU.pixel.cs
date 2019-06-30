@@ -1,4 +1,6 @@
-﻿using Address = System.UInt16;
+﻿using System;
+using System.Linq;
+using Address = System.UInt16;
 
 namespace SharpNES.SharedCode
 {
@@ -6,6 +8,25 @@ namespace SharpNES.SharedCode
     {
         private int cycle;
         private int scanLine;
+
+        private class Sprite
+        {
+            private int[,] sprite;
+
+            public Sprite(int[,] data)
+            {
+                sprite = data;
+            }
+        }
+
+        private class Tile
+        {
+            public Sprite Sprite { get; set; }
+            public int PaletteId { get; set; }
+            public int ScrollX { get; set; }
+            public int ScrollY { get; set; }
+        }
+
         public void Run(int cycle)
         {
             this.cycle += cycle;
@@ -43,12 +64,12 @@ namespace SharpNES.SharedCode
                 // スクロール中の場合まどは32をオーバーする→次のネームテーブル
                 var nameTableId = (tileX / 32) % 2 + tableOffset;
                 var offsetAddressByNameTable = nameTableId * 0x400;
-                BuildTile(clampedTileX, clampedTileY, offsetAddressByNameTable);
+                var tile = BuildTile(clampedTileX, clampedTileY, offsetAddressByNameTable);
             }
 
         }
 
-        private void BuildTile(int tileX, int tileY, int offset)
+        private Tile BuildTile(int tileX, int tileY, int offset)
         {
             // タイルがどのブロックに所属するか
             var blockId = GetBlockId(tileX, tileY);
@@ -59,6 +80,32 @@ namespace SharpNES.SharedCode
             // バイトの内訳としては0b(右下)(左下)(右上)(左上)
             // なので属性をブロックIDx2だけビットシフトして0b11でマスクする
             var paletteId = (attribute >> (blockId * 2)) & 0x03;
+            var sprite = this.BuildSprite(spriteId, maskRegister.BackgroundPatternTableAddress);
+            return new Tile
+            {
+                Sprite = sprite,
+                PaletteId = paletteId,
+                ScrollX = 0,
+                ScrollY = 0
+            };
+        }
+
+        private Sprite BuildSprite(int spriteId, Address offset)
+        {
+            var spriteData = new int[8, 8];
+            for (var y = 0; y < 16; y++)
+            {
+                var address = (Address)(spriteId * 16 + y + offset);
+                var data = characterROM.Read(address);
+                for (var x = 0; x < 8; x++)
+                {
+                    if ((data & (0x80 >> x)) == 1)
+                    {
+                        spriteData[y % 8, x] += (0x01 << (y / 8));
+                    }
+                }
+            }
+            return new Sprite(spriteData);
         }
 
         private int GetBlockId(int tileX, int tileY)
