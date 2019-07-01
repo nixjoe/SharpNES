@@ -179,19 +179,7 @@ namespace SharpNES.SharedCode
             {
                 // TODO キャラクタRAMへの書き込み
             }
-
             currentVideoRamAddress += controlRegister.AddressIncrement;
-        }
-
-
-        private Address GetPaletteRamAddress(Address address)
-        {
-            // 0x3F10, 0x3F14, 0x3F18, 0x3F1Cは
-            // 0x3F00, 0x3F04, 0x3F08, 0x3F0Cのミラー
-            var a = address & 0x1F;
-            var isSpriteMirror = (a == 0x10) || (a == 0x14) || (a == 0x18) || (a == 0x1C);
-            return isSpriteMirror ? (Address)(a - 0x10) : (Address)a;
-
         }
     }
 }

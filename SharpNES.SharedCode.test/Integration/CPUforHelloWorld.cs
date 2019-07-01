@@ -12,13 +12,14 @@ namespace SharpNES.standard.test.Integration
     public class CPUforHelloWorld
     {
         private CPU cpu;
+        private PPU ppu;
 
         public CPUforHelloWorld()
         {
             var rom = Resources.ResourceManager.GetObject("sample1");
             var cartridge = new Cartridge(new MemoryStream((byte[])rom));
             var ram = new RAM(0x0800);
-            var ppu = new PPU();
+            ppu = new PPU(cartridge);
             var bus = new CpuBus(ram, ppu, cartridge);
             cpu = new CPU(bus);
         }
@@ -32,6 +33,7 @@ namespace SharpNES.standard.test.Integration
             while (true)
             {
                 var cycle = cpu.ExecuteInstruction();
+                ppu.Run(cycle);
                 count++;
             }
         }

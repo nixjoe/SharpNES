@@ -27,9 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\sample1.nes" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -38,6 +35,8 @@
 
   <ItemGroup>
     <None Remove="Resources\sample1.nes" />
+    <Content Include="Resources\sample1.nes" />
   </ItemGroup>
+
   <Import Project="..\SharpNES.SharedCode.test\SharpNES.SharedCode.test.projitems" Label="Shared" />
 </Project>
